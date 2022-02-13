@@ -15,7 +15,6 @@ class DateInformation:
             "births": [],
             "birthdays": [],
             "deaths": [],
-            "currency_rates": [],
         }
 
     # These wiki functions grabs the historical information tied to the day and month.
