@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 import requests
-import json
+import jsonpickle
 from dotenv import load_dotenv
 from os import getenv
 
@@ -20,12 +20,15 @@ class DateInformation:
         self.wiki_births()
         self.wiki_deaths()
 
+    def toJSON(self):
+        return jsonpickle.encode(self)
+
     # These wiki functions grabs the historical information tied to the day and month.
     # Because it is pulling back way more information than what is specific to
     # the day/month/year, I'm going to use the extra data to include a "things
     # that happened on other years on this day" section to the app.
 
-    # TODO: Remove the redundancy in wiki_events and wiki_births by creating a function that handles the seperation of current years and other years
+    # TODO: Remove the redundancy between the wiki functions
 
     def wiki_events(self):
         r = requests.get(
@@ -40,16 +43,13 @@ class DateInformation:
             data = r.json()
             events = []
             other_years_events = []
+
             for event in data["events"]:
-                # I am taking into account if the API adds "AD" to the beginning or end of the year.
-                if event["year"] in (
-                    str(self.date.year),
-                    f"{str(self.date.year)} AD",
-                    f"AD {str(self.date.year)}",
-                ):
+                year = self.output_year_without_ad(event["year"])
+                if year == str(self.date.year):
                     events.append(event)
                 # because the user can't enter BC dates, I don't want them displayed in the other_years_events list.
-                elif "BC" in (event["year"][-2:], event["year"][2:]):
+                elif "BC" in (year[-2:], year[:2]):
                     continue
                 else:
                     other_years_events.append(event)
@@ -76,21 +76,18 @@ class DateInformation:
             births = []
             birthdays = []
             for birth in data["births"]:
+                year = self.output_year_without_ad(birth["year"])
                 # I am taking into account if the API adds "AD" to the beginning or end of the year.
-                if birth["year"] in (
-                    str(self.date.year),
-                    f"{str(self.date.year)} AD",
-                    f"AD {str(self.date.year)}",
-                ):
+                if year == str(self.date.year):
                     births.append(birth)
                 # Because the user can't enter BC dates, I don't want them displayed in the birthdays list.
-                elif "BC" in (birth["year"][-2:], birth["year"][2:]):
+                elif "BC" in (year[-2:], year[:2]):
                     continue
                 # I only want to populate this with people born before the input date so that I can have a "birthdays" section
                 # Since I've already dealt with BC dates, I don't need to consider them here.
-                elif int(birth["year"]) < self.date.year:
+                elif int(year) < self.date.year:
                     birthdays.append(birth)
-            if births:
+            if len(births) > 0:
                 self.date_data["births"] = births
             else:
                 self.date_data["births"] = None
@@ -111,21 +108,26 @@ class DateInformation:
             data = r.json()
             deaths = []
             for death in data["deaths"]:
-                # I am taking into account if the API adds "AD" to the beginning or end of the year.
-                if death["year"] in (
-                    str(self.date.year),
-                    f"{str(self.date.year)} AD",
-                    f"AD {str(self.date.year)}",
-                ):
+                year = self.output_year_without_ad(death["year"])
+                if year == str(self.date.year):
                     deaths.append(death)
                 # Because the user can't enter BC dates, I don't want them displayed in the birthdays list.
-                elif "BC" in (death["year"][-2:], death["year"][2:]):
+                elif "BC" in (death["year"][-2:], death["year"][:2]):
                     continue
             if deaths:
                 self.date_data["deaths"] = deaths
             else:
                 self.date_data["deaths"] = None
             pass
+
+    def output_year_without_ad(self, year):
+        if year[-3:] == " AD":
+            output_year = year[:-3]
+        elif year[:3] == "AD ":
+            output_year = year[3:]
+        else:
+            output_year = year
+        return output_year
 
         # self.date_data["events"] = dictData
 
@@ -134,6 +136,6 @@ class DateInformation:
     # print(data)
 
 
-test_date = date(year=1908, month=1, day=15)
-date_information = DateInformation(test_date)
-pass
+# test_date = date(year=2021, month=2, day=29)
+# date_information = DateInformation(test_date)
+# pass
