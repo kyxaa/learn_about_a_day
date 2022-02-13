@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Data Output{% endblock %}
+
+{% block content%}
+  <div class="accordion" id="dateInformationDisplayAccordian">
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="eventsOnDate">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#eventsOnDateItems" aria-expanded="false" aria-controls="eventsOnDateItems">
+          Events On {{ date_information.date }}
+        </button>
+      </h2>
+      <div id="eventsOnDateItems" class="accordion-collapse collapse" aria-labelledby="eventsOnDate">
+        <div class="accordion-body">
+          {% if date_information.date_data["events"] %}
+            <div class="table-responsive">
+              <table class = "table">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">What Happened?</th>
+                    <th scope="col">Wikipedia Links</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for event in date_information.date_data["events"] %}
+                    <th scope="row">{{ loop.index }}</th>
+                    <th scope="row">{{ event["description"] }}</th>
+                    <th scope="row">
+                      {% for article in event["wikipedia"] %}
+                        <a href={{ article["wikipedia"] }}>{{ article["title"] }}</a>
+                        {% if loop.index > 1 %}
+                          <br><a href={{ article["wikipedia"] }}>{{ article["title"] }}</a>
+                        {% endif %}
+                      {% endfor %}
+                    </th>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}  
+
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="eventsInOtherYears">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#eventsInOtherYearsItems" aria-expanded="false" aria-controls="eventsInOtherYearsItems">
+          Events On {{ date_information.date.month }} {{ date_information.date.day }} In Other Years
+        </button>
+      </h2>
+      <div id="eventsInOtherYearsItems" class="accordion-collapse collapse" aria-labelledby="eventsInOtherYears">
+        <div class="accordion-body">
+
+
+
+
+          <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+        
+        
+        
+        
+        </div>
+      </div>
+    </div>
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="birthsOnDate">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#birthsOnDateItems" aria-expanded="false" aria-controls="birthsOnDateItems">
+          Births On {{ date_information.date }}
+        </button>
+      </h2>
+      <div id="birthsOnDateItems" class="accordion-collapse collapse" aria-labelledby="birthsOnDate">
+        <div class="accordion-body">
+          <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="birthdaysOnDate">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#birthdaysOnDateItems" aria-expanded="false" aria-controls="birthdaysOnDateItems">
+          Birthdays On {{ date_information.date }}
+        </button>
+      </h2>
+      <div id="birthdaysOnDateItems" class="accordion-collapse collapse" aria-labelledby="birthdaysOnDate">
+        <div class="accordion-body">
+          <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="deathsOnDate">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#deathsOnDateItems" aria-expanded="false" aria-controls="deathsOnDateItems">
+          Deaths On {{ date_information.date }}
+        </button>
+      </h2>
+      <div id="deathsOnDateItems" class="accordion-collapse collapse" aria-labelledby="deathsOnDate">
+        <div class="accordion-body">
+
+
+
+
+
+          <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+        
+        
+        
+        
+        </div>
+      </div>
+    </div>
+  </div>
+  <p>Date is {{ date_information.date }}</p>
+{% endblock %}

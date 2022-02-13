@@ -1,8 +1,6 @@
 from datetime import date, timedelta
 import requests
-import jsonpickle
-from dotenv import load_dotenv
-from os import getenv
+from time import sleep
 
 
 class DateInformation:
@@ -19,9 +17,6 @@ class DateInformation:
         self.wiki_events()
         self.wiki_births()
         self.wiki_deaths()
-
-    def toJSON(self):
-        return jsonpickle.encode(self)
 
     # These wiki functions grabs the historical information tied to the day and month.
     # Because it is pulling back way more information than what is specific to
@@ -45,14 +40,14 @@ class DateInformation:
             other_years_events = []
 
             for event in data["events"]:
-                year = self.output_year_without_ad(event["year"])
-                if year == str(self.date.year):
-                    events.append(event)
-                # because the user can't enter BC dates, I don't want them displayed in the other_years_events list.
-                elif "BC" in (year[-2:], year[:2]):
-                    continue
-                else:
-                    other_years_events.append(event)
+                if event["year"]:
+                    year = event["year"]
+                    if self.is_edgecase_year(year):
+                        continue
+                    elif year == str(self.date.year):
+                        events.append(event)
+                    else:
+                        other_years_events.append(event)
             if events:
                 self.date_data["events"] = events
             else:
@@ -76,17 +71,16 @@ class DateInformation:
             births = []
             birthdays = []
             for birth in data["births"]:
-                year = self.output_year_without_ad(birth["year"])
-                # I am taking into account if the API adds "AD" to the beginning or end of the year.
-                if year == str(self.date.year):
-                    births.append(birth)
-                # Because the user can't enter BC dates, I don't want them displayed in the birthdays list.
-                elif "BC" in (year[-2:], year[:2]):
-                    continue
-                # I only want to populate this with people born before the input date so that I can have a "birthdays" section
-                # Since I've already dealt with BC dates, I don't need to consider them here.
-                elif int(year) < self.date.year:
-                    birthdays.append(birth)
+                if birth["year"]:
+                    year = birth["year"]
+                    if self.is_edgecase_year(year):
+                        continue
+                    elif year == str(self.date.year):
+                        births.append(birth)
+                    # I only want to populate this with people born before the input date so that I can have
+                    # a "birthdays" section
+                    elif int(year) < self.date.year:
+                        birthdays.append(birth)
             if len(births) > 0:
                 self.date_data["births"] = births
             else:
@@ -108,34 +102,36 @@ class DateInformation:
             data = r.json()
             deaths = []
             for death in data["deaths"]:
-                year = self.output_year_without_ad(death["year"])
-                if year == str(self.date.year):
-                    deaths.append(death)
-                # Because the user can't enter BC dates, I don't want them displayed in the birthdays list.
-                elif "BC" in (death["year"][-2:], death["year"][:2]):
-                    continue
+                if death["year"]:
+                    year = death["year"]
+                    if self.is_edgecase_year(year):
+                        continue
+                    elif year == str(self.date.year):
+                        deaths.append(death)
             if deaths:
                 self.date_data["deaths"] = deaths
             else:
                 self.date_data["deaths"] = None
-            pass
 
-    def output_year_without_ad(self, year):
-        if year[-3:] == " AD":
-            output_year = year[:-3]
-        elif year[:3] == "AD ":
-            output_year = year[3:]
-        else:
-            output_year = year
-        return output_year
-
-        # self.date_data["events"] = dictData
-
-    # def wiki_births(self)
-
-    # print(data)
+    # There are some responses that return a year value that isn't only a number(AD 63, 53 BC, 60 BCE, etc.).
+    # I'm choosing not to deal with any entry that is an example of this as it isn't worth the time to write
+    # up the logic for each edge case.
+    def is_edgecase_year(self, year):
+        try:
+            int(year)
+            return False
+        except:
+            return True
 
 
-# test_date = date(year=2021, month=2, day=29)
-# date_information = DateInformation(test_date)
-# pass
+# Testing logic each date within a range to ensure that this part of the app breaks.
+# start_date = date(1960, 1, 1)
+# end_date = date(1960, 12, 31)
+# delta = timedelta(days=1)
+
+# while start_date <= end_date:
+#     print(start_date)
+#     date_information = DateInformation(start_date)
+
+#     start_date += delta
+#     sleep(0.25)
