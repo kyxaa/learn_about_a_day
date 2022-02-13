@@ -9,11 +9,13 @@
       {% endfor%}
     {%  endif %}
   {% endwith%}
-  <form action="" method="POST" name="date_input">
-    {{ form.csrt_token }}
-    {{ form.date.label }} {{ form.date(class = 'datepicker') }}  {{ form.hidden_tag() }}
-    <p>
-      {{ form.submit() }}
-    </p>
-  </form> 
+  <div class="p-5 mb-4 bg-light rounded-3">
+    <div class="container-fluid py-1">
+      <form action="" method="POST" name="date_input">
+        {{ form.csrt_token }}
+        {{ form.date.label }} {{ form.date(class = 'datepicker') }}  {{ form.hidden_tag() }} {{ form.submit() }}
+      </form> 
+    </div>
+    </div>
+
 {% endblock %}
