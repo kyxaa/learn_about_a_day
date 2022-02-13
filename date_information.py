@@ -16,6 +16,9 @@ class DateInformation:
             "birthdays": [],
             "deaths": [],
         }
+        self.wiki_events()
+        self.wiki_births()
+        self.wiki_deaths()
 
     # These wiki functions grabs the historical information tied to the day and month.
     # Because it is pulling back way more information than what is specific to
@@ -131,9 +134,6 @@ class DateInformation:
     # print(data)
 
 
-test_date = date(year=2020, month=2, day=29)
+test_date = date(year=1908, month=1, day=15)
 date_information = DateInformation(test_date)
-date_information.wiki_events()
-date_information.wiki_births()
-date_information.wiki_deaths()
 pass
