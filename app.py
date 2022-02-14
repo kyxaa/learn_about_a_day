@@ -82,7 +82,7 @@ def output():
                 year=session["date_for_session"][2],
             )
             date_information = DateInformation(date_from_session)
-            session.pop("date_for_session")
+            session.clear()
             return render_template(
                 "output.html",
                 date_information=date_information,
