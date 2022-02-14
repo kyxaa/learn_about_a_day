@@ -4,7 +4,6 @@ from datetime import date
 from flask_wtf import FlaskForm
 from wtforms import DateField, SubmitField
 from wtforms.validators import DataRequired
-from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from os import getenv
 
@@ -58,11 +57,6 @@ def date_input():
         return render_template("date_input.html", form=form)
 
 
-@app.route("/todo/")
-def todo():
-    return render_template("todo.html")
-
-
 @app.route("/output/", methods=["GET", "POST"])
 def output():
     if session.get("date_for_session"):
@@ -73,7 +67,13 @@ def output():
         )
         date_information = DateInformation(date_from_session)
         session.pop("date_for_session")
-        return render_template("output.html", date_information=date_information)
+        return render_template(
+            "output.html",
+            date_information=date_information,
+            today=date.today(),
+            formatted_full_date=date_information.date.strftime("%A, %B %d, %Y"),
+            formatted_month_day=date_information.date.strftime("%B %d"),
+        )
     else:
         return redirect(url_for("date_input"))
 

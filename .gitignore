@@ -1,6 +1,7 @@
 # User Specified
 .vscode
 flask_session
+test_jsons
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -140,4 +141,3 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-guildSpecific.py

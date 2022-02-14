@@ -1,11 +1,10 @@
-from datetime import date, timedelta
+from datetime import date
 import requests
-from time import sleep
+import json
 
 
 class DateInformation:
     def __init__(self, date: date):
-        # TODO: Include support for BC dates using
         self.date = date
         self.date_data = {
             "events": [],
@@ -23,17 +22,13 @@ class DateInformation:
     # the day/month/year, I'm going to use the extra data to include a "things
     # that happened on other years on this day" section to the app.
 
-    # TODO: Remove the redundancy between the wiki functions
-
     def wiki_events(self):
         r = requests.get(
             f"https://byabbe.se/on-this-day/{self.date.month}/{self.date.day}/events.json"
         )
         if not r.ok:
-            # raise Exception("ERROR: Count not fetch results")
             self.date_data["events"] = None
             self.date_data["other_years_events"] = None
-            # TODO: put some sort of error flag here
         else:
             data = r.json()
             events = []
@@ -62,10 +57,8 @@ class DateInformation:
             f"https://byabbe.se/on-this-day/{self.date.month}/{self.date.day}/births.json"
         )
         if not r.ok:
-            # raise Exception("ERROR: Count not fetch results")
             self.date_data["births"] = None
             self.date_data["birthdays"] = None
-            # TODO: put some sort of error flag here
         else:
             data = r.json()
             births = []
@@ -95,9 +88,7 @@ class DateInformation:
             f"https://byabbe.se/on-this-day/{self.date.month}/{self.date.day}/deaths.json"
         )
         if not r.ok:
-            # raise Exception("ERROR: Count not fetch results")
             self.date_data["deaths"] = None
-            # TODO: put some sort of error flag here
         else:
             data = r.json()
             deaths = []
@@ -128,10 +119,13 @@ class DateInformation:
 # start_date = date(1960, 1, 1)
 # end_date = date(1960, 12, 31)
 # delta = timedelta(days=1)
-
+# i = 0
 # while start_date <= end_date:
 #     print(start_date)
 #     date_information = DateInformation(start_date)
 
 #     start_date += delta
 #     sleep(0.25)
+#     with open(f"date_data{i}.json", "w") as outfile:
+#         json.dump(date_information.date_data, outfile)
+#     i += 1
