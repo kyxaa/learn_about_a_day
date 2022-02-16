@@ -1,5 +1,13 @@
 # external libraries
-from flask import Flask, redirect, url_for, render_template, request, session, flash
+from flask import (
+    Flask,
+    redirect,
+    url_for,
+    render_template,
+    request,
+    session,
+    flash,
+)
 from datetime import date
 from flask_wtf import FlaskForm
 from wtforms import DateField, SubmitField
@@ -82,7 +90,7 @@ def output():
                 year=session["date_for_session"][2],
             )
             date_information = DateInformation(date_from_session)
-            session.clear()
+            session.pop("date_for_session")
             return render_template(
                 "output.html",
                 date_information=date_information,
